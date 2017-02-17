@@ -1,6 +1,7 @@
 ---
 title: "R markdown + Shiny"
-output: html_notebook
+output: html_document
+runtime: shiny
 --- 
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
@@ -8,7 +9,7 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 
 
@@ -17,6 +18,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 library(southafricastats)
+library(shiny)
 
 
 ```
@@ -32,9 +34,56 @@ compare_provinces <- mortality_zaf %>%
   left_join(totals) %>%
   mutate(rate = deaths/total *1000) %>%
   group_by(province, indicator) %>%
-  summarise(ave_rate=mean(rate)) %>%
+  summarise(ave_rate=mean(rate)) %>% 
+  ungroup %>%
+  left_join(totals) %>%
   spread(indicator, ave_rate)
 
+
+```
+
+```{r}
+ggplot(compare_provinces, aes(`Tuberculosis (A15-A19)`, 
+                             `Human immunodeficiency virus [HIV] disease (B20-B24)`, 
+                             label = province)) + geom_point(aes(size = total), alpha = 0.8, colour ="darkblue") + 
+      geom_text(vjust = 2.5)
+
+```
+```{r shiny_part}
+
+selectInput(inputId = "x",
+            label = "X-axis",
+            choices = colnames(compare_provinces[3:20]),
+            selected = "Tuberculosis (A15-A19)")
+
+selectInput(inputId = "y",
+            label = "Y-axis",
+            choices = colnames(compare_provinces[3:20]),
+            selected = "Human immunodeficiency virus [HIV] disease (B20-B24)")
+```
+
+```{r reactive}
+selected_df <- reactive({
+  
+  subset_df <- compare_provinces[, c(1,2, 
+                        which(colnames(compare_provinces) == input$x), 
+                        which(colnames(compare_provinces) == input$y))] 
+  colnames(subset_df) <- c("province", "total", "x", "y")
+  subset_df
+})
+
+```
+
+```{r plot}
+
+renderPlot({
+  
+  ggplot(selected_df(),
+         aes(x, y, label = province)) + geom_point(aes(size = total), alpha = 0.8, colour ="darkblue") + 
+      geom_text(vjust = 2.5) + theme_minimal() + 
+    labs(x = input$x, y = input$y)
+  
+})
 
 ```
 
