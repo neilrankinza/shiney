@@ -11,6 +11,7 @@ library(shiny)
 library(dplyr)
 library(ggplot2)
 library(southafricastats)
+library(DT)
 
 mortality <-mortality_zaf %>% filter((indicator != "All causes"))
 
@@ -27,12 +28,16 @@ ui <- fluidPage(
                      label = "Choose province:",
                      choices = unique(mortality_zaf$province), 
                      selected = "Gauteng", 
-                     multiple = TRUE)
+                     multiple = TRUE), 
+         checkboxInput(inputId = "showtable", 
+                       label = "Show table?", 
+                       value = FALSE)
       ),
       
       # Show a plot of the generated distribution
       mainPanel(
-         plotOutput("LinePlot")
+         plotOutput("LinePlot"),
+         dataTableOutput("mortality_table")
       )
    )
 )
@@ -49,6 +54,13 @@ server <- function(input, output) {
      
      
    })
+   
+   output$mortality_table <- renderDataTable({
+     if(input$showtable) {
+       DT::datatable(mortality %>% filter(province %in% input$province))
+     }
+   })
+   
 }
 
 # Run the application 
