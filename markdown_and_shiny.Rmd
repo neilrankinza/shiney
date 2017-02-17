@@ -1,0 +1,32 @@
+---
+title: "R markdown + Shiny"
+output: html_notebook
+--- 
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r library_setup}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(southafricastats)
+
+
+```
+
+
+```{r}
+
+totals <- population_zaf %>%
+  filter(year == 2013) %>%
+  select(province, total)
+
+```
+
