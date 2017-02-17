@@ -28,5 +28,13 @@ totals <- population_zaf %>%
   filter(year == 2013) %>%
   select(province, total)
 
+compare_provinces <- mortality_zaf %>%
+  left_join(totals) %>%
+  mutate(rate = deaths/total *1000) %>%
+  group_by(province, indicator) %>%
+  summarise(ave_rate=mean(rate)) %>%
+  spread(indicator, ave_rate)
+
+
 ```
 

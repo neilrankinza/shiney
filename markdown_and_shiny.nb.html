@@ -188,16 +188,25 @@ library(southafricastats)</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG90YWxzIDwtIHBvcHVsYXRpb25femFmICU+JVxuICBmaWx0ZXIoeWVhciA9PSAyMDEzKSAlPiVcbiAgc2VsZWN0KHByb3ZpbmNlLCB0b3RhbClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG90YWxzIDwtIHBvcHVsYXRpb25femFmICU+JVxuICBmaWx0ZXIoeWVhciA9PSAyMDEzKSAlPiVcbiAgc2VsZWN0KHByb3ZpbmNlLCB0b3RhbClcbmNvbXBhcmVfcHJvdmluY2VzIDwtIG1vcnRhbGl0eV96YWYgJT4lXG4gIGxlZnRfam9pbih0b3RhbHMpICU+JVxuICBtdXRhdGUocmF0ZSA9IGRlYXRocy90b3RhbCAqMTAwMCkgJT4lXG4gIGdyb3VwX2J5KHByb3ZpbmNlLCBpbmRpY2F0b3IpICU+JVxuICBzdW1tYXJpc2UoYXZlX3JhdGU9bWVhbihyYXRlKSkgJT4lXG4gIHNwcmVhZChpbmRpY2F0b3IsIGF2ZV9yYXRlKVxuYGBgIn0= -->
 <pre class="r"><code>totals &lt;- population_zaf %&gt;%
   filter(year == 2013) %&gt;%
-  select(province, total)</code></pre>
+  select(province, total)
+compare_provinces &lt;- mortality_zaf %&gt;%
+  left_join(totals) %&gt;%
+  mutate(rate = deaths/total *1000) %&gt;%
+  group_by(province, indicator) %&gt;%
+  summarise(ave_rate=mean(rate)) %&gt;%
+  spread(indicator, ave_rate)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcInByb3ZpbmNlXCJcbiJ9 -->
+<pre><code>Joining, by = &quot;province&quot;</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgbWFya2Rvd24gKyBTaGlueSINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tIA0KDQpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiANCg0KVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkN0cmwrU2hpZnQrRW50ZXIqLiANCg0KYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpDQpgYGANCg0KDQpgYGB7ciBsaWJyYXJ5X3NldHVwfQ0KbGlicmFyeShkcGx5cikNCmxpYnJhcnkoZ2dwbG90MikNCmxpYnJhcnkodGlkeXIpDQpsaWJyYXJ5KHNvdXRoYWZyaWNhc3RhdHMpDQoNCg0KYGBgDQoNCg0KYGBge3J9DQoNCnRvdGFscyA8LSBwb3B1bGF0aW9uX3phZiAlPiUNCiAgZmlsdGVyKHllYXIgPT0gMjAxMykgJT4lDQogIHNlbGVjdChwcm92aW5jZSwgdG90YWwpDQoNCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgbWFya2Rvd24gKyBTaGlueSINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tIA0KDQpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiANCg0KVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkN0cmwrU2hpZnQrRW50ZXIqLiANCg0KYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpDQpgYGANCg0KDQpgYGB7ciBsaWJyYXJ5X3NldHVwfQ0KbGlicmFyeShkcGx5cikNCmxpYnJhcnkoZ2dwbG90MikNCmxpYnJhcnkodGlkeXIpDQpsaWJyYXJ5KHNvdXRoYWZyaWNhc3RhdHMpDQoNCg0KYGBgDQoNCg0KYGBge3J9DQoNCnRvdGFscyA8LSBwb3B1bGF0aW9uX3phZiAlPiUNCiAgZmlsdGVyKHllYXIgPT0gMjAxMykgJT4lDQogIHNlbGVjdChwcm92aW5jZSwgdG90YWwpDQoNCmNvbXBhcmVfcHJvdmluY2VzIDwtIG1vcnRhbGl0eV96YWYgJT4lDQogIGxlZnRfam9pbih0b3RhbHMpICU+JQ0KICBtdXRhdGUocmF0ZSA9IGRlYXRocy90b3RhbCAqMTAwMCkgJT4lDQogIGdyb3VwX2J5KHByb3ZpbmNlLCBpbmRpY2F0b3IpICU+JQ0KICBzdW1tYXJpc2UoYXZlX3JhdGU9bWVhbihyYXRlKSkgJT4lDQogIHNwcmVhZChpbmRpY2F0b3IsIGF2ZV9yYXRlKQ0KDQoNCmBgYA0KDQo=</div>
 
 
 
