@@ -75,7 +75,8 @@ selected_df <- reactive({
 ```
 
 ```{r plot}
-
+fillCol(height = 800, 
+        
 renderPlot({
   
   ggplot(selected_df(),
@@ -83,7 +84,8 @@ renderPlot({
       geom_text(vjust = 2.5) + theme_minimal() + 
     labs(x = input$x, y = input$y)
   
-})
+}, height = 800)
+)
 
 ```
 
